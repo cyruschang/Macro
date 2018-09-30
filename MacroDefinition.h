@@ -2,7 +2,7 @@
 //  MacroDefinition.h
 //  MacroDefinitionDemo
 //
-//  Created by 新风作浪 on 13-6-9.
+//  Created by 新风作浪 on 13-6-9, Maintain by Cyruschang
 //  Copyright (c) 2013年 SpinningSphere Labs. All rights reserved.
 //
 
