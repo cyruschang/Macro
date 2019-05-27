@@ -22,13 +22,18 @@
 #define kSafeArea_Top (kStatusBarHeight > 20.f ? 44: 20)
 #define kSafeArea_Bottom (kStatusBarHeight > 20.f ? 34: 0)
 #define kLine_MinHeight (1.0/ [UIScreen mainScreen].scale)
-
-
-//获取屏幕 宽度、高度
-#define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
-#define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
+// 获取屏幕 宽度、高度
+#define kScreenWidth ([[UIScreen mainScreen] bounds].size.width)
+#define kScreenHeight ([[UIScreen mainScreen] bounds].size.height)
+#define kScreenBounds [UIScreen mainScreen].bounds
 
 //-------------------获取设备大小-------------------------
+
+// 不同屏幕尺寸字体适配
+#define kScreenWidthRatio  (kScreenWidth / 375.0)
+#define kScreenHeightRatio (kScreenHeight / 667.0)
+
+#define IMAGE_NAMED(name) [UIImage imageNamed:name]
 
 
 //-------------------打印日志-------------------------
@@ -54,16 +59,32 @@ printf("%s class: <%p %s:(%d) > method: %s \n%s\n",[str UTF8String] ,self, [[[NS
 #define PATH_OF_TEMP        NSTemporaryDirectory()
 #define PATH_OF_DOCUMENT    [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
 
+// 非空判断
+// 字符串非空
+#define ISNOTEMPTY_STRING(s) (s && [s isKindOfClass:[NSString class]] && ![s isEqualToString:@""] && ![s isEqual:[NSNull null]])
+
+// 数组非空
+#define ISNOTEMPTY_ARRAY(arr) (arr && [arr isKindOfClass:[NSArray class]] && arr.count > 0 && ![arr isEqual:[NSNull null]])
+
+// 字典非空
+#define ISNOTEMPTY_DICTIONARY(dict) (dict && [dict isKindOfClass:[NSDictionary class]] && dict.count > 0 && ![dict isEqual:[NSNull null]])
+
+// 集合非空
+#define ISNOTEMPTY_SET(set) (set && [set isKindOfClass:[NSSet class]] && set.count > 0 && ![set isEqual:[NSNull null]])
+
+// number非空
+#define ISNOTEMPTY_NUMBER(number) (number && [number isKindOfClass:[NSNumber class]] && ![number isEqual:[NSNull null]] && ![number isEqualToNumber:[NSDecimalNumber notANumber]])
+
 //----------------------系统----------------------------
 
-//获取系统版本
+// 获取系统版本
 #define IOS_VERSION [[[UIDevice currentDevice] systemVersion] floatValue]
 #define CurrentSystemVersion [[UIDevice currentDevice] systemVersion]
 
-//获取当前语言
+// 获取当前语言
 #define CurrentLanguage ([[NSLocale preferredLanguages] objectAtIndex:0])
 
-//判断是否 Retina屏、设备是否%fhone 5、是否是iPad
+// 判断是否 Retina屏、设备是否%fhone 5、是否是iPad
 #define isRetina ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 960), [[UIScreen mainScreen] currentMode].size) : NO)
 #define iPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
 #define isPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
@@ -71,19 +92,27 @@ printf("%s class: <%p %s:(%d) > method: %s \n%s\n",[str UTF8String] ,self, [[[NS
 
 //判断是真机还是模拟器
 #if TARGET_OS_IPHONE
-//iPhone Device
+// iPhone Device
 #endif
 
 #if TARGET_IPHONE_SIMULATOR
-//iPhone Simulator
+// iPhone Simulator
 #endif
 
-//检查系统版本
+// 检查系统版本
 #define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
 #define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 #define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
+
+/* 发送通知 */
+#define POST_MSG_WITH_OBJ_DICT(aName, anObject, aUserInfo)     [[NSNotificationCenter defaultCenter] \
+postNotificationName:aName \
+object:anObject \
+userInfo:aUserInfo]
+#define POST_MSG_WITH_OBJ(aName, anObject)      POST_MSG_WITH_OBJ_DICT(aName, anObject, nil)
+#define POST_MSG(aName)                         POST_MSG_WITH_OBJ(aName, nil)
 
 
 //----------------------系统----------------------------
@@ -118,9 +147,6 @@ printf("%s class: <%p %s:(%d) > method: %s \n%s\n",[str UTF8String] ,self, [[[NS
 
 //定义UIImage对象
 #define IMAGE(A) [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:A ofType:nil]]
-
-//定义UIImage对象
-#define ImageNamed(_pointer) [UIImage imageNamed:[UIUtil imageName:_pointer]]
 
 //建议使用前两种宏定义,性能高于后者
 //----------------------图片----------------------------
